@@ -2,14 +2,22 @@
 <html>
 <head>
     <title>Редактирование пользователя</title>
+    <style>
+        body {background-color: #f8f9fa; margin: 20px; padding: 20px}
+        h1 {color: #333}
+        form {background-color: #fff; padding: 20px}
+        label {color: #333; margin-right: 10px}
+        input[type="text"] {padding: 8px; margin-bottom: 10px; width: 200px}
+        input[type="submit"] {background-color: #007bff; color: #fff; cursor: pointer}
+        input[type="submit"]:hover {background-color: #0056b3}
+
+    </style>
 </head>
 <body>
-    <h1>Редактирование пользователя</h1>
-
+    <h1>Editing a user</h1>
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+    <p>{{ error }}</p>
     {% endif %}
-
     <form method="POST">
         <label for="first_name">Имя:</label>
         <input type="text" id="first_name" name="first_name" value="{{ f.first_name.data }}" required><br>
@@ -19,7 +27,6 @@
 
         <label for="username">Имя пользователя:</label>
         <input type="text" id="username" name="username" value="{{ f.username.data }}" required><br>
-
 
         <input type="submit" value="Сохранить">
     </form>
