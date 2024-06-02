@@ -13,7 +13,7 @@ class StoryForm(Form):
         validators=[InputRequired(message="Вы не указали заголовок новости.")]
     )
 
-    story_content = TextAreaField(label="Содержание новости:", name="story-content")
+    story_content = TextAreaField(label="О чём новости:", name="story-content")
 
     story_author = SelectField(label="Автор новости:", name="story-author", coerce=int)
 
@@ -30,7 +30,7 @@ class StoryForm(Form):
     creation_date = DateField(label="Дата публикации новости:", name="creation-date", format="%Y-%m-%d")
 
     story_topics = SelectMultipleField(
-        label="Тематика",
+        label="Тема",
         name="story-topics",
         coerce=int,
         widget=ListWidget(html_tag="ul", prefix_label=False),
@@ -52,4 +52,31 @@ class StoryForm(Form):
         validators=[
             InputRequired(message="Вы не указали, готовы ли взять на себя ответственность за публикацию новостей спорного характера.")
         ]
+    )
+
+
+class UserForm(Form):
+    first_name = StringField(
+        label="Имя:",
+        validators=[InputRequired(message="Введите имя пользователя.")]
+    )
+
+    last_name = StringField(
+        label="Фамилия:",
+        validators=[InputRequired(message="Введите фамилию пользователя.")]
+    )
+
+    username = StringField(
+        label="Логин:",
+        validators=[InputRequired(message="Введите логин пользователя.")]
+    )
+
+    password = StringField(
+        label="Пароль:",
+        validators=[InputRequired(message="Введите пароль пользователя.")]
+    )
+
+    confirm_password = StringField(
+        label="Подтверждение пароля:",
+        validators=[InputRequired(message="Подтвердите пароль пользователя.")]
     )
