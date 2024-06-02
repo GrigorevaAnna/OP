@@ -34,6 +34,7 @@ class User(Basis):
         return f"{self.username} ({self.first_name} {self.last_name})"
 
 
+
 class Story(Basis):
     __tablename__ = "stories"
     id = Column(Integer(), primary_key=True, autoincrement=True)
