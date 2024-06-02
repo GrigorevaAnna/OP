@@ -4,21 +4,17 @@ from schema import factory, User, Story, Category
 from web_data import StoryForm, UserForm
 from flask import Flask, request, render_template, redirect
 
-
 app = Flask(__name__)
-
 
 @app.errorhandler(404)
 def router_not_found(e):
     return render_template('page-not-found.html')
-
 
 @app.route('/')
 @app.route('/index')
 def show_all_news():
     result = session.query(Story)
     return render_template('all-news-page.html', stories=result)
-
 
 @app.route('/add-user', methods=["GET", "POST"])
 def add_new_user():
@@ -38,7 +34,6 @@ def add_new_user():
         new_user.last_name = user_form.last_name.data
         new_user.username = user_form.username.data
 
-        # Проверка соответствия пароля и его подтверждения
         if user_form.password.data != user_form.confirm_password.data:
             return render_template('add-user-page.html', f=user_form, error="Пароли не совпадают.")
 
