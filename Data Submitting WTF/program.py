@@ -1,7 +1,7 @@
 import datetime as dt
 
 from schema import factory, User, Story, Category
-from web_data import StoryForm
+from web_data import StoryForm, UserForm
 from flask import Flask, request, render_template, redirect
 
 
@@ -18,6 +18,67 @@ def router_not_found(e):
 def show_all_news():
     result = session.query(Story)
     return render_template('all-news-page.html', stories=result)
+
+
+@app.route('/add-user', methods=["GET", "POST"])
+def add_new_user():
+    user_form = UserForm()
+
+    if request.method == "GET":
+        return render_template('add-user-page.html', f=user_form)
+
+    if request.method == "POST":
+        user_form.process(request.form)
+
+        if not user_form.validate():
+            return render_template('add-user-page.html', f=user_form)
+
+        new_user = User()
+        new_user.first_name = user_form.first_name.data
+        new_user.last_name = user_form.last_name.data
+        new_user.username = user_form.username.data
+
+        # Проверка соответствия пароля и его подтверждения
+        if user_form.password.data != user_form.confirm_password.data:
+            return render_template('add-user-page.html', f=user_form, error="Пароли не совпадают.")
+
+        try:
+            session.add(new_user)
+            session.commit()
+            return redirect('/index')
+        except Exception as e:
+            session.rollback()
+            return f"Что-то пошло не так. Ошибка: {e}"
+
+
+@app.route('/edit-user/<int:user_id>', methods=["GET", "POST"])
+def edit_user(user_id):
+    user = session.get(User, user_id)
+    if user is None:
+        return f"Пользователя с идентификатором {user_id} не существует."
+
+    user_form = UserForm()
+
+    if request.method == "GET":
+        user_form.first_name.data = user.first_name
+        user_form.last_name.data = user.last_name
+        user_form.username.data = user.username
+
+        return render_template("edit-user-page.html", user_id=user_id, f=user_form)
+
+    if request.method == "POST":
+        user_form.process(request.form)
+
+        user.first_name = user_form.first_name.data
+        user.last_name = user_form.last_name.data
+        user.username = user_form.username.data
+
+        try:
+            session.commit()
+            return redirect('/index')
+        except Exception as e:
+            session.rollback()
+            return f"Что-то пошло не так. Ошибка: {e}"
 
 
 @app.route('/add-story', methods=["GET", "POST"])
@@ -54,7 +115,6 @@ def add_new_story():
         if story_form.creation_date.data is not None:
             new_story.created_on = story_form.creation_date.data
 
-        print(story_form.story_topics.data)
 
         for category_id in story_form.story_topics.data:
             c = session.get(Category, category_id)
